@@ -1,0 +1,17 @@
+type Task = 
+ record {
+   categoryId: nat;
+   id: nat;
+   "text": text;
+ };
+type Category = 
+ record {
+   id: nat;
+   name: text;
+ };
+service : {
+  addTask: (text, nat) -> (nat);
+  deleteTask: (nat) -> (bool);
+  getCategories: () -> (vec Category) query;
+  getTasks: () -> (vec Task) query;
+}
