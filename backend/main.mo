@@ -13,6 +13,7 @@ actor {
     id: Nat;
     text: Text;
     categoryId: Nat;
+    completed: Bool;
   };
 
   type Category = {
@@ -38,6 +39,7 @@ actor {
       id = id;
       text = text;
       categoryId = categoryId;
+      completed = false;
     };
     tasks.put(id, task);
     id
@@ -47,6 +49,22 @@ actor {
     switch (tasks.remove(id)) {
       case null { false };
       case (?_) { true };
+    }
+  };
+
+  public func toggleTaskCompletion(id: Nat): async Bool {
+    switch (tasks.get(id)) {
+      case null { false };
+      case (?task) {
+        let updatedTask = {
+          id = task.id;
+          text = task.text;
+          categoryId = task.categoryId;
+          completed = not task.completed;
+        };
+        tasks.put(id, updatedTask);
+        true
+      };
     }
   };
 

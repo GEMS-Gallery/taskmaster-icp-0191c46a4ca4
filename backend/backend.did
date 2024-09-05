@@ -1,6 +1,7 @@
 type Task = 
  record {
    categoryId: nat;
+   completed: bool;
    id: nat;
    "text": text;
  };
@@ -14,4 +15,5 @@ service : {
   deleteTask: (nat) -> (bool);
   getCategories: () -> (vec Category) query;
   getTasks: () -> (vec Task) query;
+  toggleTaskCompletion: (nat) -> (bool);
 }

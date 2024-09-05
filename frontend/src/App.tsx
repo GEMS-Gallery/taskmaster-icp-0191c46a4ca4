@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { backend } from 'declarations/backend';
-import { Box, Container, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, TextField, Button, Card, CardContent, IconButton, CircularProgress } from '@mui/material';
+import { Box, Container, Grid, Typography, List, ListItem, ListItemText, ListItemIcon, TextField, Button, Card, CardContent, IconButton, CircularProgress, Checkbox } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Work as WorkIcon, Person as PersonIcon, ShoppingCart as ShoppingCartIcon, Favorite as FavoriteIcon } from '@mui/icons-material';
 
 type Task = {
   id: bigint;
   text: string;
   categoryId: bigint;
+  completed: boolean;
 };
 
 type Category = {
@@ -59,6 +60,13 @@ function App() {
   async function deleteTask(id: bigint) {
     setLoading(true);
     await backend.deleteTask(id);
+    await fetchTasks();
+    setLoading(false);
+  }
+
+  async function toggleTaskCompletion(id: bigint) {
+    setLoading(true);
+    await backend.toggleTaskCompletion(id);
     await fetchTasks();
     setLoading(false);
   }
@@ -123,7 +131,19 @@ function App() {
               .map((task) => (
                 <Card key={Number(task.id)} sx={{ mb: 2 }}>
                   <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="body1">{task.text}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Checkbox
+                        checked={task.completed}
+                        onChange={() => toggleTaskCompletion(task.id)}
+                        color="primary"
+                      />
+                      <Typography
+                        variant="body1"
+                        sx={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+                      >
+                        {task.text}
+                      </Typography>
+                    </Box>
                     <IconButton onClick={() => deleteTask(task.id)} color="error">
                       <DeleteIcon />
                     </IconButton>
